@@ -13,45 +13,57 @@
             background: transparent;
         }
 
-        /* Override all chat styles with higher specificity */
-        #n8n-chat div.chat-header {
-            min-height: 40px !important;
-            max-height: 40px !important;
-            padding: 8px 12px !important;
-            background-color: #0f1117 !important;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
-        }
-
-        #n8n-chat h3.chat-title {
-            font-size: 13px !important;
-            margin: 0 !important;
-            padding: 0 !important;
-            line-height: 1.2 !important;
-        }
-
-        #n8n-chat p.chat-subtitle {
+        /* Control font sizes and spacing */
+        #n8n-chat .chat-message-bot,
+        #n8n-chat .chat-message-user {
             font-size: 11px !important;
-            margin: 2px 0 0 0 !important;
-            padding: 0 !important;
-            color: #4ade80 !important;
-            line-height: 1.2 !important;
+            line-height: 1.4 !important;
+            padding: 8px 12px !important;
+            margin-bottom: 6px !important;
+            max-width: 85% !important;
         }
 
-        #n8n-chat div.chat-window {
+        #n8n-chat .chat-window {
             width: 300px !important;
-            background: #0f1117 !important;
-            border-radius: 12px !important;
-            overflow: hidden !important;
+            height: 450px !important;
         }
 
-        #n8n-chat button.chat-toggle {
+        #n8n-chat .chat-input textarea {
+            font-size: 11px !important;
+            line-height: 1.4 !important;
+            padding: 8px 10px !important;
+            min-height: 34px !important;
+        }
+
+        #n8n-chat .chat-input textarea::placeholder {
+            font-size: 11px !important;
+        }
+
+        #n8n-chat .chat-header {
+            min-height: 38px !important;
+            max-height: 38px !important;
+            padding: 6px 12px !important;
+        }
+
+        #n8n-chat .chat-title {
+            font-size: 12px !important;
+            margin: 0 !important;
+            line-height: 1.2 !important;
+            font-weight: 500 !important;
+        }
+
+        #n8n-chat .chat-subtitle {
+            font-size: 10px !important;
+            margin: 2px 0 0 0 !important;
+            line-height: 1.2 !important;
+            opacity: 0.8 !important;
+        }
+
+        /* Keep button styling */
+        #n8n-chat .chat-toggle {
             background-color: #4ade80 !important;
-            transition: transform 0.2s !important;
-        }
-
-        #n8n-chat button.chat-toggle:hover {
-            transform: scale(1.05) !important;
-            background-color: #22c55e !important;
+            width: 46px !important;
+            height: 46px !important;
         }
     </style>
 </head>
@@ -66,7 +78,7 @@
             mode: 'window',
             showWelcomeScreen: false,
             initialMessages: [
-                'How can I help optimize your workflow today?'
+                'Hi! How can I help you optimize your workflow today?'
             ],
             i18n: {
                 en: {
