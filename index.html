@@ -1,165 +1,110 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FlowLeaf AI Chat</title>
-    <link href="https://cdn.jsdelivr.net/npm/@n8n/chat/dist/style.css" rel="stylesheet" />
-    <style>
-        html, body {
-            margin: 0;
-            padding: 0;
-            height: 100%;
-            background: transparent;
-        }
-
-        /* Extra large widget */
-        #n8n-chat .chat-window {
-            width: 400px !important;
-            height: 700px !important;
-            border-radius: 12px !important;
-            background: #0f1117 !important;
-            overflow: hidden !important;
-            border: 1px solid rgba(255, 255, 255, 0.1) !important;
-        }
-
-        /* Compact dark header with green accent */
-        #n8n-chat .chat-header {
-            min-height: 32px !important;
-            max-height: 32px !important;
-            padding: 4px 12px !important;
-            background: #0f1117 !important;
-            border-bottom: 1px solid rgba(74, 222, 128, 0.2) !important;
-            display: flex !important;
-            align-items: center !important;
-        }
-
-        #n8n-chat .chat-title {
-            font-size: 12px !important;
-            line-height: 1.2 !important;
-            margin: 0 !important;
-            padding: 0 !important;
-            font-weight: 500 !important;
-            color: #4ade80 !important;
-        }
-
-        #n8n-chat .chat-subtitle {
-            font-size: 10px !important;
-            line-height: 1.2 !important;
-            margin: 1px 0 0 0 !important;
-            padding: 0 !important;
-            color: rgba(74, 222, 128, 0.7) !important;
-        }
-
-        /* Message styling with green theme */
-        #n8n-chat .chat-message-bot {
-            font-size: 11px !important;
-            line-height: 1.4 !important;
-            padding: 8px 12px !important;
-            margin-bottom: 6px !important;
-            border-radius: 8px !important;
-            max-width: 85% !important;
-            background: #1a1d25 !important;
-            border: 1px solid rgba(74, 222, 128, 0.1) !important;
-            color: #ffffff !important;
-        }
-
-        #n8n-chat .chat-message-user {
-            font-size: 11px !important;
-            line-height: 1.4 !important;
-            padding: 8px 12px !important;
-            margin-bottom: 6px !important;
-            border-radius: 8px !important;
-            max-width: 85% !important;
-            background: #4ade80 !important;
-            color: #0f1117 !important;
-            font-weight: 500 !important;
-        }
-
-        #n8n-chat .chat-messages {
-            padding: 10px !important;
-            background: #0f1117 !important;
-        }
-
-        /* Input area with green accents */
-        #n8n-chat .chat-input {
-            background: #0f1117 !important;
-            border-top: 1px solid rgba(74, 222, 128, 0.2) !important;
-            padding: 8px !important;
-        }
-
-        #n8n-chat .chat-input textarea {
-            font-size: 11px !important;
-            padding: 8px 10px !important;
-            min-height: 34px !important;
-            background: #1a1d25 !important;
-            border: 1px solid rgba(74, 222, 128, 0.2) !important;
-            border-radius: 8px !important;
-            color: #ffffff !important;
-        }
-
-        #n8n-chat .chat-input textarea:focus {
-            border-color: #4ade80 !important;
-            outline: none !important;
-        }
-
-        /* Bright green chat toggle */
-        #n8n-chat .chat-toggle {
-            background-color: #4ade80 !important;
-            width: 48px !important;
-            height: 48px !important;
-            display: flex !important;
-            align-items: center !important;
-            justify-content: center !important;
-            border-radius: 50% !important;
-            border: none !important;
-            box-shadow: 0 4px 12px rgba(74, 222, 128, 0.3) !important;
-            transition: all 0.2s ease !important;
-        }
-
-        #n8n-chat .chat-toggle:hover {
-            background-color: #22c55e !important;
-            transform: scale(1.05) !important;
-        }
-
-        /* Scrollbar styling */
-        #n8n-chat .chat-messages::-webkit-scrollbar {
-            width: 4px !important;
-        }
-
-        #n8n-chat .chat-messages::-webkit-scrollbar-thumb {
-            background-color: rgba(74, 222, 128, 0.3) !important;
-            border-radius: 2px !important;
-        }
-
-        #n8n-chat .chat-messages::-webkit-scrollbar-track {
-            background: #0f1117 !important;
-        }
-    </style>
-</head>
-<body>
-    <div id="n8n-chat"></div>
-    
-    <script type="module">
-        import { createChat } from 'https://cdn.jsdelivr.net/npm/@n8n/chat/dist/chat.bundle.es.js';
+<div id="n8n-chat"></div>
+<style>
+    #n8n-chat {
+        /* Dark theme colors */
+        --chat--header--background: #0f1117 !important;
+        --chat--header--color: #ffffff !important;
+        --chat--header--border-bottom: 1px solid rgba(74, 222, 128, 0.2) !important;
         
-        createChat({
-            webhookUrl: 'https://n8n-18mf.onrender.com/webhook/da19cf96-3a4d-4569-a7fa-b8b1c2d82711/chat',
-            mode: 'window',
-            showWelcomeScreen: false,
-            initialMessages: [
-                'Hi! How can I help you optimize your workflow today?'
-            ],
-            i18n: {
-                en: {
-                    title: 'FlowLeaf AI',
-                    subtitle: "Ready to assist",
-                    footer: '',
-                    getStarted: 'Start Chat',
-                    inputPlaceholder: 'Message...',
-                },
+        /* Compact header text */
+        --chat--heading--font-size: 0.875rem !important;
+        --chat--subtitle--font-size: 0.75rem !important;
+        --chat--header-height: 32px !important;
+        
+        /* Bright green chat button */
+        --chat--toggle--background: #4ade80 !important;
+        --chat--toggle--hover--background: #22c55e !important;
+        --chat--toggle--active--background: #16a34a !important;
+        --chat--toggle--color: #ffffff !important;
+        --chat--toggle--size: 48px !important;
+        
+        /* Large window sizing */
+        --chat--window--width: 400px !important;
+        --chat--window--height: 700px !important;
+    }
+
+    /* Window styling */
+    #n8n-chat .chat-window {
+        background: #0f1117 !important;
+        border-radius: 12px !important;
+        box-shadow: 0 4px 24px rgba(0, 0, 0, 0.2) !important;
+        border: 1px solid rgba(74, 222, 128, 0.1) !important;
+    }
+
+    /* Header */
+    #n8n-chat .chat-header {
+        padding: 4px 12px !important;
+    }
+
+    /* Messages */
+    #n8n-chat .chat-message-bot {
+        background: #1a1d25 !important;
+        color: #ffffff !important;
+        font-size: 11px !important;
+        border: 1px solid rgba(74, 222, 128, 0.1) !important;
+    }
+
+    #n8n-chat .chat-message-user {
+        background: #4ade80 !important;
+        color: #0f1117 !important;
+        font-size: 11px !important;
+    }
+
+    /* Input area */
+    #n8n-chat .chat-input {
+        background: #0f1117 !important;
+        border-top: 1px solid rgba(74, 222, 128, 0.2) !important;
+    }
+
+    #n8n-chat .chat-input textarea {
+        background: #1a1d25 !important;
+        color: #ffffff !important;
+        font-size: 11px !important;
+        border: 1px solid rgba(74, 222, 128, 0.2) !important;
+        border-radius: 8px !important;
+        padding: 8px 10px !important;
+    }
+
+    /* Toggle button */
+    #n8n-chat .chat-toggle {
+        box-shadow: 0 4px 12px rgba(74, 222, 128, 0.3) !important;
+        transition: transform 0.2s ease !important;
+    }
+
+    #n8n-chat .chat-toggle:hover {
+        transform: scale(1.05) !important;
+    }
+
+    /* Scrollbar */
+    #n8n-chat .chat-messages::-webkit-scrollbar {
+        width: 4px !important;
+    }
+
+    #n8n-chat .chat-messages::-webkit-scrollbar-thumb {
+        background-color: rgba(74, 222, 128, 0.3) !important;
+        border-radius: 2px !important;
+    }
+</style>
+
+<link href="https://cdn.jsdelivr.net/npm/@n8n/chat/dist/style.css" rel="stylesheet" />
+<script type="module">
+    import { createChat } from 'https://cdn.jsdelivr.net/npm/@n8n/chat/dist/chat.bundle.es.js';
+    
+    createChat({
+        webhookUrl: 'https://n8n-18mf.onrender.com/webhook/da19cf96-3a4d-4569-a7fa-b8b1c2d82711/chat',
+        mode: 'window',
+        showWelcomeScreen: false,
+        initialMessages: [
+            'How can I help optimize your workflow today?'
+        ],
+        i18n: {
+            en: {
+                title: 'FlowLeaf AI',
+                subtitle: "Ready to assist",
+                footer: '',
+                getStarted: 'Start Chat',
+                inputPlaceholder: 'Message...',
             },
-        });
-    </script>
-</body>
-</html>
+        },
+    });
+</script>
