@@ -13,57 +13,91 @@
             background: transparent;
         }
 
-        /* Control font sizes and spacing */
+        /* Larger widget */
+        #n8n-chat .chat-window {
+            width: 360px !important;
+            height: 600px !important;
+            border-radius: 12px !important;
+            background: #0f1117 !important;
+            overflow: hidden !important;
+        }
+
+        /* Compact header */
+        #n8n-chat .chat-header {
+            min-height: 32px !important;
+            max-height: 32px !important;
+            padding: 4px 12px !important;
+            background: #0f1117 !important;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
+            display: flex !important;
+            align-items: center !important;
+        }
+
+        #n8n-chat .chat-title {
+            font-size: 12px !important;
+            line-height: 1.2 !important;
+            margin: 0 !important;
+            padding: 0 !important;
+            font-weight: 500 !important;
+            color: #ffffff !important;
+        }
+
+        #n8n-chat .chat-subtitle {
+            font-size: 10px !important;
+            line-height: 1.2 !important;
+            margin: 1px 0 0 0 !important;
+            padding: 0 !important;
+            color: rgba(255, 255, 255, 0.7) !important;
+        }
+
+        /* Message styling */
         #n8n-chat .chat-message-bot,
         #n8n-chat .chat-message-user {
             font-size: 11px !important;
             line-height: 1.4 !important;
             padding: 8px 12px !important;
             margin-bottom: 6px !important;
+            border-radius: 8px !important;
             max-width: 85% !important;
         }
 
-        #n8n-chat .chat-window {
-            width: 300px !important;
-            height: 450px !important;
+        #n8n-chat .chat-messages {
+            padding: 10px !important;
+        }
+
+        /* Input area */
+        #n8n-chat .chat-input {
+            background: #0f1117 !important;
+            border-top: 1px solid rgba(255, 255, 255, 0.1) !important;
+            padding: 8px !important;
         }
 
         #n8n-chat .chat-input textarea {
             font-size: 11px !important;
-            line-height: 1.4 !important;
             padding: 8px 10px !important;
             min-height: 34px !important;
+            background: #1a1d25 !important;
+            border: none !important;
+            border-radius: 8px !important;
         }
 
-        #n8n-chat .chat-input textarea::placeholder {
-            font-size: 11px !important;
-        }
-
-        #n8n-chat .chat-header {
-            min-height: 38px !important;
-            max-height: 38px !important;
-            padding: 6px 12px !important;
-        }
-
-        #n8n-chat .chat-title {
-            font-size: 12px !important;
-            margin: 0 !important;
-            line-height: 1.2 !important;
-            font-weight: 500 !important;
-        }
-
-        #n8n-chat .chat-subtitle {
-            font-size: 10px !important;
-            margin: 2px 0 0 0 !important;
-            line-height: 1.2 !important;
-            opacity: 0.8 !important;
-        }
-
-        /* Keep button styling */
+        /* Bright green chat toggle */
         #n8n-chat .chat-toggle {
             background-color: #4ade80 !important;
-            width: 46px !important;
-            height: 46px !important;
+            width: 48px !important;
+            height: 48px !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            border-radius: 50% !important;
+            border: none !important;
+            box-shadow: 0 4px 12px rgba(74, 222, 128, 0.3) !important;
+            transition: all 0.2s ease !important;
+        }
+
+        #n8n-chat .chat-toggle:hover {
+            background-color: #22c55e !important;
+            transform: scale(1.05) !important;
         }
     </style>
 </head>
