@@ -6,114 +6,50 @@
     <title>FlowLeaf AI Chat</title>
     <link href="https://cdn.jsdelivr.net/npm/@n8n/chat/dist/style.css" rel="stylesheet" />
     <style>
-        body {
+        html, body {
             margin: 0;
             padding: 0;
-            overflow: hidden;
+            height: 100%;
             background: transparent;
         }
 
-        #n8n-chat {
-            position: fixed;
-            bottom: 0;
-            right: 0;
-            width: 100vw;
-            height: 100vh;
-            pointer-events: none;
-        }
-
-        #n8n-chat .chat-container {
-            pointer-events: all;
-        }
-
-        /* Modern compact header */
-        .chat-header {
+        /* Override all chat styles with higher specificity */
+        #n8n-chat div.chat-header {
+            min-height: 40px !important;
+            max-height: 40px !important;
             padding: 8px 12px !important;
-            background: #0f1117 !important;
-            display: flex !important;
-            align-items: center !important;
-            gap: 8px !important;
+            background-color: #0f1117 !important;
             border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
-            height: 40px !important;
         }
 
-        .chat-title {
+        #n8n-chat h3.chat-title {
             font-size: 13px !important;
-            font-weight: 600 !important;
-            color: #ffffff !important;
             margin: 0 !important;
+            padding: 0 !important;
+            line-height: 1.2 !important;
         }
 
-        .chat-subtitle {
+        #n8n-chat p.chat-subtitle {
             font-size: 11px !important;
+            margin: 2px 0 0 0 !important;
+            padding: 0 !important;
             color: #4ade80 !important;
-            margin: 0 !important;
-            opacity: 0.9 !important;
+            line-height: 1.2 !important;
         }
 
-        /* Window styling */
-        .chat-window {
+        #n8n-chat div.chat-window {
             width: 300px !important;
-            height: 450px !important;
-            border-radius: 12px !important;
             background: #0f1117 !important;
-            box-shadow: 0 4px 24px rgba(0, 0, 0, 0.2) !important;
-            border: 1px solid rgba(255, 255, 255, 0.1) !important;
+            border-radius: 12px !important;
             overflow: hidden !important;
         }
 
-        /* Message area */
-        .chat-messages {
-            background: #0f1117 !important;
-            padding: 10px !important;
-        }
-
-        .chat-message-bot {
-            background: #1a1d25 !important;
-            color: #ffffff !important;
-            font-size: 12px !important;
-            padding: 8px 12px !important;
-            border-radius: 8px !important;
-            margin-bottom: 6px !important;
-        }
-
-        .chat-message-user {
-            background: #4ade80 !important;
-            color: #0f1117 !important;
-            font-size: 12px !important;
-            padding: 8px 12px !important;
-            border-radius: 8px !important;
-            margin-bottom: 6px !important;
-        }
-
-        /* Input area */
-        .chat-input {
-            background: #0f1117 !important;
-            border-top: 1px solid rgba(255, 255, 255, 0.1) !important;
-            padding: 8px !important;
-        }
-
-        .chat-input textarea {
-            background: #1a1d25 !important;
-            color: #ffffff !important;
-            font-size: 12px !important;
-            border: none !important;
-            border-radius: 8px !important;
-            padding: 8px 12px !important;
-            min-height: 36px !important;
-        }
-
-        /* Chat toggle button */
-        .chat-toggle {
-            width: 48px !important;
-            height: 48px !important;
+        #n8n-chat button.chat-toggle {
             background-color: #4ade80 !important;
-            border-radius: 50% !important;
-            box-shadow: 0 4px 12px rgba(74, 222, 128, 0.3) !important;
-            transition: transform 0.2s ease !important;
+            transition: transform 0.2s !important;
         }
 
-        .chat-toggle:hover {
+        #n8n-chat button.chat-toggle:hover {
             transform: scale(1.05) !important;
             background-color: #22c55e !important;
         }
