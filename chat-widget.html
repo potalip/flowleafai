@@ -40,11 +40,12 @@
 
         .message {
             margin-bottom: 12px;
-            max-width: 80%;
+            max-width: 85%;
             padding: 10px 15px;
             border-radius: 15px;
-            line-height: 1.4;
+            line-height: 1.5;
             font-size: 14px;
+            white-space: pre-wrap;
         }
 
         .user-message {
@@ -59,6 +60,12 @@
             color: #000;
             margin-right: auto;
             border-bottom-left-radius: 5px;
+        }
+
+        .chat-input-container {
+            padding: 10px;
+            background: #fff;
+            border-top: 1px solid #eee;
         }
 
         .chat-input {
@@ -76,10 +83,6 @@
             border-radius: 20px;
             outline: none;
             font-size: 14px;
-        }
-
-        .chat-input input:focus {
-            border-color: #000;
         }
 
         .send-btn {
@@ -103,9 +106,7 @@
             Chat Support
         </div>
         <div class="chat-messages" id="chatMessages">
-            <div class="message bot-message">
-                Hello! How can I help you today?
-            </div>
+            <div class="message bot-message">Hello! How can I help you today?</div>
         </div>
         <div class="chat-input">
             <input type="text" id="messageInput" placeholder="Type your message...">
@@ -119,21 +120,13 @@
         const sendBtn = document.getElementById('sendBtn');
         const webhook = 'https://n8n-18mf.onrender.com/webhook/da19cf96-3a4d-4569-a7fa-b8b1c2d82711/chat';
 
-        // Store conversation history
-        let conversationHistory = [];
-
         function addMessage(text, isUser = false) {
             const messageDiv = document.createElement('div');
             messageDiv.className = `message ${isUser ? 'user-message' : 'bot-message'}`;
-            messageDiv.textContent = text;
+            // Preserve line breaks and spacing in the response
+            messageDiv.innerHTML = text.replace(/\n/g, '<br>');
             chatMessages.appendChild(messageDiv);
             chatMessages.scrollTop = chatMessages.scrollHeight;
-            
-            // Add to conversation history
-            conversationHistory.push({
-                role: isUser ? 'user' : 'assistant',
-                content: text
-            });
         }
 
         async function sendMessage() {
@@ -155,8 +148,7 @@
                         'Content-Type': 'application/json',
                     },
                     body: JSON.stringify({
-                        message: message,
-                        history: conversationHistory
+                        input: message  // Changed to match expected format
                     })
                 });
 
@@ -170,8 +162,6 @@
             } catch (error) {
                 console.error('Error:', error);
                 addMessage("I'm sorry, I'm having trouble connecting. Please try again.");
-                // Remove the failed message from history
-                conversationHistory.pop();
             } finally {
                 // Re-enable input and button
                 messageInput.disabled = false;
