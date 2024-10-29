@@ -20,7 +20,6 @@
             display: flex;
             flex-direction: column;
             overflow: hidden;
-            transition: all 0.3s ease;
             font-family: -apple-system, BlinkMacSystemFont, sans-serif;
         }
 
@@ -28,8 +27,8 @@
             background: #000;
             color: #fff;
             padding: 15px;
-            font-weight: 500;
             text-align: center;
+            font-weight: 500;
         }
 
         .chat-messages {
@@ -46,7 +45,6 @@
             border-radius: 15px;
             line-height: 1.4;
             font-size: 14px;
-            position: relative;
         }
 
         .user-message {
@@ -80,6 +78,10 @@
             font-size: 14px;
         }
 
+        .chat-input input:focus {
+            border-color: #000;
+        }
+
         .send-btn {
             background: #000;
             color: #fff;
@@ -87,25 +89,16 @@
             padding: 10px 20px;
             border-radius: 20px;
             cursor: pointer;
-            transition: background 0.3s ease;
         }
 
-        .send-btn:hover {
-            background: #333;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-
-        .message {
-            animation: fadeIn 0.3s ease;
+        .send-btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
         }
     </style>
 </head>
 <body>
-    <div class="chat-widget" id="chatWidget">
+    <div class="chat-widget">
         <div class="chat-header">
             Chat Support
         </div>
@@ -126,22 +119,34 @@
         const sendBtn = document.getElementById('sendBtn');
         const webhook = 'https://n8n-18mf.onrender.com/webhook/da19cf96-3a4d-4569-a7fa-b8b1c2d82711/chat';
 
+        // Store conversation history
+        let conversationHistory = [];
+
         function addMessage(text, isUser = false) {
             const messageDiv = document.createElement('div');
             messageDiv.className = `message ${isUser ? 'user-message' : 'bot-message'}`;
             messageDiv.textContent = text;
             chatMessages.appendChild(messageDiv);
             chatMessages.scrollTop = chatMessages.scrollHeight;
+            
+            // Add to conversation history
+            conversationHistory.push({
+                role: isUser ? 'user' : 'assistant',
+                content: text
+            });
         }
 
         async function sendMessage() {
             const message = messageInput.value.trim();
             if (!message) return;
 
+            // Disable input and button while sending
+            messageInput.disabled = true;
+            sendBtn.disabled = true;
+
             // Add user message
             addMessage(message, true);
             messageInput.value = '';
-            sendBtn.disabled = true;
 
             try {
                 const response = await fetch(webhook, {
@@ -149,21 +154,29 @@
                     headers: {
                         'Content-Type': 'application/json',
                     },
-                    body: JSON.stringify({ input: message }), // Changed to match expected format
+                    body: JSON.stringify({
+                        message: message,
+                        history: conversationHistory
+                    })
                 });
 
                 if (!response.ok) {
                     throw new Error('Network response was not ok');
                 }
 
-                const data = await response.text(); // Changed to handle text response
-                addMessage(data); // Add raw response text
-                
+                const data = await response.text();
+                addMessage(data);
+
             } catch (error) {
                 console.error('Error:', error);
                 addMessage("I'm sorry, I'm having trouble connecting. Please try again.");
+                // Remove the failed message from history
+                conversationHistory.pop();
             } finally {
+                // Re-enable input and button
+                messageInput.disabled = false;
                 sendBtn.disabled = false;
+                messageInput.focus();
             }
         }
 
@@ -172,7 +185,7 @@
 
         // Send message on Enter key
         messageInput.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter' && !sendBtn.disabled) {
+            if (e.key === 'Enter' && !messageInput.disabled) {
                 sendMessage();
             }
         });
