@@ -24,26 +24,12 @@
             font-family: -apple-system, BlinkMacSystemFont, sans-serif;
         }
 
-        .chat-widget.minimized {
-            height: 60px;
-            cursor: pointer;
-        }
-
         .chat-header {
             background: #000;
             color: #fff;
             padding: 15px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .minimize-btn {
-            background: none;
-            border: none;
-            color: #fff;
-            cursor: pointer;
-            font-size: 20px;
+            font-weight: 500;
+            text-align: center;
         }
 
         .chat-messages {
@@ -94,10 +80,6 @@
             font-size: 14px;
         }
 
-        .chat-input input:focus {
-            border-color: #000;
-        }
-
         .send-btn {
             background: #000;
             color: #fff;
@@ -112,20 +94,6 @@
             background: #333;
         }
 
-        .typing-indicator {
-            display: none;
-            padding: 10px 15px;
-            color: #666;
-            font-style: italic;
-            font-size: 12px;
-        }
-
-        /* Animations */
-        @keyframes slideIn {
-            from { transform: translateY(100%); }
-            to { transform: translateY(0); }
-        }
-
         @keyframes fadeIn {
             from { opacity: 0; }
             to { opacity: 1; }
@@ -134,25 +102,17 @@
         .message {
             animation: fadeIn 0.3s ease;
         }
-
-        .chat-widget {
-            animation: slideIn 0.5s ease;
-        }
     </style>
 </head>
 <body>
     <div class="chat-widget" id="chatWidget">
         <div class="chat-header">
-            <div>Chat Support</div>
-            <button class="minimize-btn" id="minimizeBtn">−</button>
+            Chat Support
         </div>
         <div class="chat-messages" id="chatMessages">
             <div class="message bot-message">
-                Hello! 👋 How can I help you today?
+                Hello! How can I help you today?
             </div>
-        </div>
-        <div class="typing-indicator" id="typingIndicator">
-            Bot is typing...
         </div>
         <div class="chat-input">
             <input type="text" id="messageInput" placeholder="Type your message...">
@@ -161,32 +121,15 @@
     </div>
 
     <script>
-        const widget = document.getElementById('chatWidget');
-        const minimizeBtn = document.getElementById('minimizeBtn');
         const chatMessages = document.getElementById('chatMessages');
         const messageInput = document.getElementById('messageInput');
         const sendBtn = document.getElementById('sendBtn');
-        const typingIndicator = document.getElementById('typingIndicator');
         const webhook = 'https://n8n-18mf.onrender.com/webhook/da19cf96-3a4d-4569-a7fa-b8b1c2d82711/chat';
 
-        // Minimize/Maximize functionality
-        minimizeBtn.addEventListener('click', () => {
-            widget.classList.toggle('minimized');
-            minimizeBtn.textContent = widget.classList.contains('minimized') ? '+' : '−';
-        });
-
-        // Click on minimized widget to maximize
-        widget.addEventListener('click', (e) => {
-            if (widget.classList.contains('minimized') && e.target !== minimizeBtn) {
-                widget.classList.remove('minimized');
-                minimizeBtn.textContent = '−';
-            }
-        });
-
-        function addMessage(message, isUser = false) {
+        function addMessage(text, isUser = false) {
             const messageDiv = document.createElement('div');
             messageDiv.className = `message ${isUser ? 'user-message' : 'bot-message'}`;
-            messageDiv.textContent = message;
+            messageDiv.textContent = text;
             chatMessages.appendChild(messageDiv);
             chatMessages.scrollTop = chatMessages.scrollHeight;
         }
@@ -198,9 +141,7 @@
             // Add user message
             addMessage(message, true);
             messageInput.value = '';
-
-            // Show typing indicator
-            typingIndicator.style.display = 'block';
+            sendBtn.disabled = true;
 
             try {
                 const response = await fetch(webhook, {
@@ -208,24 +149,21 @@
                     headers: {
                         'Content-Type': 'application/json',
                     },
-                    body: JSON.stringify({ message }),
+                    body: JSON.stringify({ input: message }), // Changed to match expected format
                 });
 
-                const data = await response.json();
-                
-                // Hide typing indicator
-                typingIndicator.style.display = 'none';
-
-                // Add bot response
-                if (data && data.response) {
-                    addMessage(data.response);
-                } else {
-                    addMessage('Sorry, I encountered an error processing your request.');
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
                 }
+
+                const data = await response.text(); // Changed to handle text response
+                addMessage(data); // Add raw response text
+                
             } catch (error) {
                 console.error('Error:', error);
-                typingIndicator.style.display = 'none';
-                addMessage('Sorry, I encountered an error processing your request.');
+                addMessage("I'm sorry, I'm having trouble connecting. Please try again.");
+            } finally {
+                sendBtn.disabled = false;
             }
         }
 
@@ -234,7 +172,7 @@
 
         // Send message on Enter key
         messageInput.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') {
+            if (e.key === 'Enter' && !sendBtn.disabled) {
                 sendMessage();
             }
         });
