@@ -3,183 +3,176 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FlowLeaf Chat</title>
-    <link href="https://cdn.jsdelivr.net/npm/@n8n/chat/dist/style.css" rel="stylesheet" />
+    <title>Workflow Specialist Position</title>
     <style>
-        /* Reset */
+        :root {
+            --primary-black: #1a1a1a;
+            --light-gray: #f5f5f5;
+            --medium-gray: #e0e0e0;
+        }
+
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
 
-        /* Base widget style */
-        #n8n-chat {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            z-index: 99999;
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            line-height: 1.6;
+            color: var(--primary-black);
+            background-color: white;
         }
 
-        /* Chat window */
-        .chat-window {
-            width: 400px;
-            height: 700px;
-            background: #0f1117;
-            border-radius: 16px;
-            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
+        header {
+            background-color: var(--primary-black);
+            color: white;
+            padding: 4rem 2rem;
+            text-align: center;
+        }
+
+        nav {
+            background-color: white;
+            padding: 1rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        nav ul {
             display: flex;
-            flex-direction: column;
-            overflow: hidden;
-            border: 1px solid rgba(74, 222, 128, 0.1);
-        }
-
-        /* Header */
-        .chat-header {
-            background: #0f1117;
-            padding: 12px 16px;
-            border-bottom: 1px solid rgba(74, 222, 128, 0.2);
-            height: 40px;
-            display: flex;
-            align-items: center;
-        }
-
-        .chat-title {
-            color: #4ade80;
-            font-size: 14px;
-            font-weight: 500;
-        }
-
-        .chat-subtitle {
-            color: rgba(255, 255, 255, 0.7);
-            font-size: 12px;
-            margin-top: 2px;
-        }
-
-        /* Messages area */
-        .chat-messages {
-            flex: 1;
-            overflow-y: auto;
-            padding: 16px;
-            background: #0f1117;
-        }
-
-        .chat-message-bot {
-            background: #1a1d25;
-            color: #ffffff;
-            padding: 10px 14px;
-            border-radius: 12px;
-            margin-bottom: 8px;
-            max-width: 85%;
-            font-size: 13px;
-            line-height: 1.4;
-            border: 1px solid rgba(74, 222, 128, 0.1);
-        }
-
-        .chat-message-user {
-            background: #4ade80;
-            color: #0f1117;
-            padding: 10px 14px;
-            border-radius: 12px;
-            margin-bottom: 8px;
-            margin-left: auto;
-            max-width: 85%;
-            font-size: 13px;
-            line-height: 1.4;
-        }
-
-        /* Input area */
-        .chat-input {
-            background: #0f1117;
-            border-top: 1px solid rgba(74, 222, 128, 0.2);
-            padding: 12px;
-        }
-
-        .chat-input textarea {
-            width: 100%;
-            background: #1a1d25;
-            border: 1px solid rgba(74, 222, 128, 0.2);
-            border-radius: 12px;
-            color: #ffffff;
-            padding: 10px 14px;
-            font-size: 13px;
-            resize: none;
-            min-height: 40px;
-            outline: none;
-        }
-
-        .chat-input textarea:focus {
-            border-color: #4ade80;
-        }
-
-        /* Toggle button */
-        .chat-toggle {
-            width: 52px;
-            height: 52px;
-            background: #4ade80;
-            border-radius: 50%;
-            border: none;
-            box-shadow: 0 4px 12px rgba(74, 222, 128, 0.3);
-            cursor: pointer;
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            transition: transform 0.2s ease;
-            display: flex;
-            align-items: center;
             justify-content: center;
+            list-style: none;
+            gap: 2rem;
         }
 
-        .chat-toggle:hover {
-            transform: scale(1.05);
-            background: #22c55e;
+        nav a {
+            color: var(--primary-black);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s ease;
         }
 
-        /* Scrollbar */
-        .chat-messages::-webkit-scrollbar {
-            width: 4px;
+        nav a:hover {
+            color: #666;
         }
 
-        .chat-messages::-webkit-scrollbar-track {
-            background: #0f1117;
+        main {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 3rem 2rem;
         }
 
-        .chat-messages::-webkit-scrollbar-thumb {
-            background: rgba(74, 222, 128, 0.3);
-            border-radius: 2px;
+        .job-card {
+            background-color: white;
+            border: 1px solid var(--medium-gray);
+            border-radius: 8px;
+            padding: 2rem;
+            margin-bottom: 2rem;
         }
 
-        /* Hide autocomplete suggestions */
-        input:-webkit-autofill,
-        textarea:-webkit-autofill {
-            display: none;
+        .highlight-box {
+            background-color: var(--light-gray);
+            border-left: 4px solid var(--primary-black);
+            padding: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .cta-button {
+            display: inline-block;
+            background-color: var(--primary-black);
+            color: white;
+            padding: 1rem 2rem;
+            border-radius: 4px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: background-color 0.3s ease;
+        }
+
+        .cta-button:hover {
+            background-color: #333;
+        }
+
+        footer {
+            background-color: var(--primary-black);
+            color: white;
+            text-align: center;
+            padding: 2rem;
+            margin-top: 4rem;
+        }
+
+        /* Chat widget container */
+        #chat-container {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 300px;
+            height: 400px;
+            background-color: white;
+            border: 1px solid var(--medium-gray);
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
         }
     </style>
 </head>
 <body>
-    <div id="n8n-chat"></div>
+    <header>
+        <h1>Workflow Specialist Position</h1>
+        <p>Join our team and shape the future of AI-powered automation</p>
+    </header>
 
-    <script type="module">
-        import { createChat } from 'https://cdn.jsdelivr.net/npm/@n8n/chat/dist/chat.bundle.es.js';
-        
-        createChat({
-            webhookUrl: 'https://not today',
-            mode: 'window',
-            showWelcomeScreen: false,
-            initialMessages: [
-                'How can I help optimize your workflow today?'
-            ],
-            i18n: {
-                en: {
-                    title: 'FlowLeaf AI',
-                    subtitle: "Ready to assist",
-                    footer: '',
-                    getStarted: 'Start Chat',
-                    inputPlaceholder: 'Message...',
-                }
-            }
-        });
-    </script>
+    <nav>
+        <ul>
+            <li><a href="#overview">Overview</a></li>
+            <li><a href="#requirements">Requirements</a></li>
+            <li><a href="#benefits">Benefits</a></li>
+            <li><a href="#apply">Apply</a></li>
+        </ul>
+    </nav>
+
+    <main>
+        <section id="overview" class="job-card">
+            <h2>Position Overview</h2>
+            <div class="highlight-box">
+                <p>We're seeking an exceptional Workflow Specialist to join our innovative team. The ideal candidate will have extensive experience in creating and managing complex workflows, ensuring seamless integration and functionality.</p>
+            </div>
+            <p>If you have a proven track record of optimizing processes and leveraging n8n to enhance AI capabilities, we want to hear from you. Your expertise will be instrumental in streamlining our operations and improving overall efficiency.</p>
+        </section>
+
+        <section id="requirements" class="job-card">
+            <h2>Key Requirements</h2>
+            <ul>
+                <li>Proven experience with n8n and workflow automation</li>
+                <li>Strong understanding of AI integration processes</li>
+                <li>Experience with complex system architecture</li>
+                <li>Excellent problem-solving abilities</li>
+                <li>Strong communication skills</li>
+            </ul>
+        </section>
+
+        <section id="benefits" class="job-card">
+            <h2>What We Offer</h2>
+            <ul>
+                <li>Competitive salary package</li>
+                <li>Remote work options</li>
+                <li>Professional development opportunities</li>
+                <li>Health and wellness benefits</li>
+                <li>Collaborative work environment</li>
+            </ul>
+        </section>
+
+        <section id="apply" class="job-card">
+            <h2>Apply Now</h2>
+            <p>Ready to take the next step in your career? We'd love to hear from you.</p>
+            <a href="#" class="cta-button">Submit Application</a>
+        </section>
+    </main>
+
+    <footer>
+        <p>© 2024 Your Company Name. All rights reserved.</p>
+    </footer>
+
+    <!-- Chat widget placeholder -->
+    <div id="chat-container">
+        <!-- Your chat widget embed code will go here -->
+    </div>
 </body>
 </html>
