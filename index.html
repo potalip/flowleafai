@@ -133,35 +133,33 @@
     let currentThreadId = null;
 
     function formatMessage(message) {
-        // Check if message contains any URLs
-        const hasUrls = /(https?:\/\/[^\s]+)/g.test(message);
-        
-        // General URL pattern matching and linking
-        message = message.replace(
-            /(https?:\/\/[^\s]+)/g,
-            url => `<a href="${url}" target="_blank" class="text-blue-600 hover:text-blue-800 underline break-all">${url}</a>`
-        );
-
-        // Add note about copying links if URLs are present
-        if (hasUrls) {
-            message += `<div class="text-sm text-gray-500 mt-2 italic">Note: If clicking the link doesn't work, you may need to copy and paste it into your browser's address bar.</div>`;
-        }
-
-        // Handle line breaks
-        message = message.replace(/\n/g, '<br>');
-        
-        // Handle bold text
-        message = message.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
-        
-        // Handle bullet points
-        message = message.replace(
-            /^[•\-*]\s(.+)$/gm,
-            '<span class="block ml-4">• $1</span>'
-        );
-        
-        return message;
+    // Check if message contains any URLs
+    const hasUrls = /(https?:\/\/[^\s]+)/g.test(message);
+    
+    // Add note about copying links if URLs are present
+    if (hasUrls) {
+        message += `
+            <div class="mt-3 p-2 bg-blue-50 text-sm rounded-lg border border-blue-200">
+                <p class="text-blue-800">
+                    <strong>✨ To access the link:</strong> Please copy the URL above and paste it into your browser's address bar.
+                </p>
+            </div>`;
     }
 
+    // Handle line breaks
+    message = message.replace(/\n/g, '<br>');
+    
+    // Handle bold text
+    message = message.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+    
+    // Handle bullet points
+    message = message.replace(
+        /^[•\-*]\s(.+)$/gm,
+        '<span class="block ml-4">• $1</span>'
+    );
+    
+    return message;
+}
     function addMessage(message, isUser) {
         const messageDiv = document.createElement('div');
         messageDiv.className = `chat-message ${isUser ? 'user-message' : 'bot-message'}`;
