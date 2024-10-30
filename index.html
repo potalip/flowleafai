@@ -126,17 +126,25 @@
                     body: JSON.stringify({ message })
                 });
 
-                let data = await response.text(); // Get response as text
+                const data = await response.text();
+                let botMessage = '';
+                
                 try {
-                    // Try to parse as JSON in case it comes as JSON
+                    // Parse the response and extract the message from the output field
                     const jsonData = JSON.parse(data);
-                    data = jsonData.message || jsonData.response || JSON.stringify(jsonData);
+                    if (typeof jsonData === 'object' && jsonData.output) {
+                        // Remove the {"output": and final } from the string if present
+                        botMessage = jsonData.output.replace(/^\{"output":"|"}$/g, '');
+                    } else {
+                        botMessage = data;
+                    }
                 } catch (e) {
                     // If parsing fails, use the text as is
+                    botMessage = data;
                 }
 
                 // Add bot response to chat
-                addMessage(data, false);
+                addMessage(botMessage, false);
             } catch (error) {
                 console.error('Error:', error);
                 addMessage('Sorry, there was an error processing your request.', false);
