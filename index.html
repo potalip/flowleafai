@@ -171,12 +171,134 @@
     </footer>
 
     <!-- Chat widget placeholder -->
-   <iframe> 
-    src="chat-widget.html" 
-    width="360" 
-    height="600" 
-    style="position: fixed; bottom: 20px; right: 20px; border: none; z-index: 9999;"
-    frameborder="0"
-</iframe>
+   <div id="chat-container">
+    <style>
+        .chat-widget {
+            width: 360px;
+            height: 600px;
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            z-index: 9999;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        }
+        .chat-header { background: black; color: white; padding: 16px; font-weight: 600; }
+        .chat-messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            background: #fafafa;
+        }
+        .message {
+            max-width: 80%;
+            padding: 12px;
+            border-radius: 12px;
+            word-wrap: break-word;
+        }
+        .user-message { background: black; color: white; margin-left: auto; }
+        .bot-message { background: white; color: black; margin-right: auto; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        .chat-input {
+            padding: 16px;
+            border-top: 1px solid #eee;
+            display: flex;
+            gap: 8px;
+            background: white;
+        }
+        #messageInput {
+            flex: 1;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            outline: none;
+        }
+        #sendButton {
+            padding: 12px 24px;
+            background: black;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+        .loading {
+            display: none;
+            margin: 0 auto;
+            width: 24px;
+            height: 24px;
+            border: 2px solid #f3f3f3;
+            border-top: 2px solid black;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+    </style>
+
+    <div class="chat-widget">
+        <div class="chat-header">Chat Support</div>
+        <div class="chat-messages" id="chatMessages">
+            <div class="message bot-message">Hello! How can I help you today?</div>
+            <div class="loading" id="loadingSpinner"></div>
+        </div>
+        <form class="chat-input" id="chatForm">
+            <input type="text" id="messageInput" placeholder="Type your message..." required>
+            <button type="submit" id="sendButton">Send</button>
+        </form>
+    </div>
+
+    <script>
+        document.getElementById('chatForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const message = document.getElementById('messageInput').value.trim();
+            if (!message) return;
+
+            // Add user message
+            addMessage(message, 'user');
+            document.getElementById('messageInput').value = '';
+            
+            // Show loading
+            document.getElementById('loadingSpinner').style.display = 'block';
+            document.getElementById('sendButton').disabled = true;
+
+            try {
+                const response = await fetch('https://n8n-18mf.onrender.com/webhook/da19cf96-3a4d-4569-a7fa-b8b1c2d82711/chat', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ message })
+                });
+
+                const text = await response.text();
+                try {
+                    const jsonResponse = JSON.parse(text);
+                    const cleanText = jsonResponse.content || jsonResponse.message || jsonResponse.response || text;
+                    addMessage(cleanText, 'bot');
+                } catch (e) {
+                    addMessage(text, 'bot');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                addMessage('Sorry, something went wrong. Please try again.', 'bot');
+            } finally {
+                document.getElementById('loadingSpinner').style.display = 'none';
+                document.getElementById('sendButton').disabled = false;
+            }
+        });
+
+        function addMessage(content, type) {
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${type}-message`;
+            messageDiv.textContent = content;
+            document.getElementById('chatMessages').appendChild(messageDiv);
+            document.getElementById('chatMessages').scrollTop = document.getElementById('chatMessages').scrollHeight;
+        }
+    </script>
+</div>
 </body>
 </html>
