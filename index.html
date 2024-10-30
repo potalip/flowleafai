@@ -124,7 +124,7 @@
         </div>
     </footer>
 
-    <script>
+   <script>
     const chatMessages = document.getElementById('chatMessages');
     const messageInput = document.getElementById('messageInput');
     const sendButton = document.getElementById('sendButton');
@@ -133,23 +133,34 @@
     let currentThreadId = null;
 
     function formatMessage(message) {
+        // First, let's extract any URLs that might be wrapped in HTML tags
+        message = message.replace(
+            /class="[^"]*">\s*(https?:\/\/[^\s<]+)/g,
+            (match, url) => url
+        );
+
         return message
-            // First, escape any HTML to prevent XSS
+            // Escape HTML to prevent XSS
             .replace(/&/g, '&amp;')
             .replace(/</g, '&lt;')
             .replace(/>/g, '&gt;')
-            // Convert URLs to clickable links
-            // This regex matches http/https URLs and also www. URLs
+            // Handle Markdown-style links [text](url)
             .replace(
-                /(https?:\/\/[^\s]+)|(www\.[^\s]+)/g, 
-                match => `<a href="${match.startsWith('www.') ? 'http://' + match : match}" 
-                            target="_blank" 
-                            rel="noopener noreferrer" 
-                            class="text-blue-600 hover:text-blue-800 underline">${match}</a>`
+                /\[(.*?)\]\((https?:\/\/[^\s)]+)\)/g,
+                (match, text, url) => `<a href="${url}" target="_blank" rel="noopener noreferrer" class="text-blue-600 hover:text-blue-800 underline">${text}</a>`
             )
-            // Then handle markdown-style bold text
+            // Convert URLs to clickable links
+            .replace(
+                /(https?:\/\/[^\s.]+\.[^\s]+)/g,
+                (match) => {
+                    // Remove any trailing periods or parentheses
+                    const url = match.replace(/[.),]+$/, '');
+                    return `<a href="${url}" target="_blank" rel="noopener noreferrer" class="text-blue-600 hover:text-blue-800 underline">${url}</a>`;
+                }
+            )
+            // Handle markdown-style bold text
             .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
-            // Finally, handle line breaks
+            // Handle line breaks
             .replace(/\n/g, '<br>');
     }
 
@@ -225,6 +236,7 @@
             try {
                 const jsonData = JSON.parse(data);
                 
+                // Handle array response
                 if (Array.isArray(jsonData) && jsonData.length > 0) {
                     const responseObj = jsonData[0];
                     
@@ -237,6 +249,7 @@
                         console.log('Updated thread ID:', currentThreadId);
                     }
                 } else if (typeof jsonData === 'object') {
+                    // Fallback for non-array responses
                     if (jsonData.output) {
                         botMessage = jsonData.output;
                     }
