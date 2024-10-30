@@ -138,21 +138,28 @@
             .replace(/&/g, '&amp;')
             .replace(/</g, '&lt;')
             .replace(/>/g, '&gt;')
-            // Convert URLs to clickable links
-            // This regex matches http/https URLs and also www. URLs
+            // Handle Markdown-style links [text](url)
             .replace(
-                /(https?:\/\/[^\s]+)|(www\.[^\s]+)/g, 
-                match => `<a href="${match.startsWith('www.') ? 'http://' + match : match}" 
+                /\[(.*?)\]\((https?:\/\/[^\s)]+)\)/g,
+                (match, text, url) => `<a href="${url}" target="_blank" rel="noopener noreferrer" class="text-blue-600 hover:text-blue-800 underline">${text}</a>`
+            )
+            // Convert regular URLs to clickable links
+            .replace(
+                /(https?:\/\/[^\s]+)|(www\.[^\s]+)/g,
+                (match) => {
+                    // Avoid converting URLs that are already part of a markdown link
+                    if (message.includes(`](${match})`)) return match;
+                    return `<a href="${match.startsWith('www.') ? 'http://' + match : match}" 
                             target="_blank" 
                             rel="noopener noreferrer" 
-                            class="text-blue-600 hover:text-blue-800 underline">${match}</a>`
+                            class="text-blue-600 hover:text-blue-800 underline">${match}</a>`;
+                }
             )
-            // Then handle markdown-style bold text
+            // Handle markdown-style bold text
             .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
-            // Finally, handle line breaks
+            // Handle line breaks
             .replace(/\n/g, '<br>');
     }
-
     function addMessage(message, isUser) {
         const messageDiv = document.createElement('div');
         messageDiv.className = `chat-message ${isUser ? 'user-message' : 'bot-message'}`;
