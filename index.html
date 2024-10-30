@@ -3,302 +3,81 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Workflow Specialist Position</title>
+    <title>n8n Questions</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
     <style>
-        :root {
-            --primary-black: #1a1a1a;
-            --light-gray: #f5f5f5;
-            --medium-gray: #e0e0e0;
+        .question-card {
+            transition: transform 0.2s ease-in-out;
         }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
+        .question-card:hover {
+            transform: translateY(-5px);
         }
-
-        body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-            line-height: 1.6;
-            color: var(--primary-black);
-            background-color: white;
-        }
-
-        header {
-            background-color: var(--primary-black);
-            color: white;
-            padding: 4rem 2rem;
-            text-align: center;
-        }
-
-        nav {
-            background-color: white;
-            padding: 1rem;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        }
-
-        nav ul {
-            display: flex;
-            justify-content: center;
-            list-style: none;
-            gap: 2rem;
-        }
-
-        nav a {
-            color: var(--primary-black);
-            text-decoration: none;
-            font-weight: 500;
-            transition: color 0.3s ease;
-        }
-
-        nav a:hover {
-            color: #666;
-        }
-
-        main {
-            max-width: 800px;
-            margin: 0 auto;
-            padding: 3rem 2rem;
-        }
-
-        .job-card {
-            background-color: white;
-            border: 1px solid var(--medium-gray);
-            border-radius: 8px;
-            padding: 2rem;
-            margin-bottom: 2rem;
-        }
-
-        .highlight-box {
-            background-color: var(--light-gray);
-            border-left: 4px solid var(--primary-black);
-            padding: 1.5rem;
-            margin: 2rem 0;
-        }
-
-        .cta-button {
-            display: inline-block;
-            background-color: var(--primary-black);
-            color: white;
-            padding: 1rem 2rem;
-            border-radius: 4px;
-            text-decoration: none;
-            font-weight: 600;
-            transition: background-color 0.3s ease;
-        }
-
-        .cta-button:hover {
-            background-color: #333;
-        }
-
-        footer {
-            background-color: var(--primary-black);
-            color: white;
-            text-align: center;
-            padding: 2rem;
-            margin-top: 4rem;
-        }
-
-        /* Chat widget container */
-        #chat-container {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            width: 300px;
-            height: 400px;
-            background-color: white;
-            border: 1px solid var(--medium-gray);
-            border-radius: 8px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        .chat-container {
+            transition: height 0.3s ease-in-out;
         }
     </style>
 </head>
-<body>
-    <header>
-        <h1>Workflow Specialist Position</h1>
-        <p>Join our team and shape the future of AI-powered automation</p>
-    </header>
+<body class="bg-gray-100 min-h-screen">
+    <div class="container mx-auto px-4 py-8">
+        <header class="text-center mb-12">
+            <h1 class="text-4xl font-bold text-gray-800 mb-4">n8n Integration Questions</h1>
+            <p class="text-gray-600">Explore common integration scenarios and get practical answers</p>
+        </header>
 
-    <nav>
-        <ul>
-            <li><a href="#overview">Overview</a></li>
-            <li><a href="#requirements">Requirements</a></li>
-            <li><a href="#benefits">Benefits</a></li>
-            <li><a href="#apply">Apply</a></li>
-        </ul>
-    </nav>
-
-    <main>
-        <section id="overview" class="job-card">
-            <h2>Position Overview</h2>
-            <div class="highlight-box">
-                <p>We're seeking an exceptional Workflow Specialist to join our innovative team. The ideal candidate will have extensive experience in creating and managing complex workflows, ensuring seamless integration and functionality.</p>
+        <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
+            <!-- Question Cards -->
+            <div class="question-card bg-white rounded-lg shadow-md p-6 hover:shadow-xl">
+                <h3 class="text-xl font-semibold text-gray-800 mb-3">Google Calendar Integration</h3>
+                <p class="text-gray-600">Add events, check availability, and manage calendars in n8n</p>
             </div>
-            <p>If you have a proven track record of optimizing processes and leveraging n8n to enhance AI capabilities, we want to hear from you. Your expertise will be instrumental in streamlining our operations and improving overall efficiency.</p>
-        </section>
 
-        <section id="requirements" class="job-card">
-            <h2>Key Requirements</h2>
-            <ul>
-                <li>Proven experience with n8n and workflow automation</li>
-                <li>Strong understanding of AI integration processes</li>
-                <li>Experience with complex system architecture</li>
-                <li>Excellent problem-solving abilities</li>
-                <li>Strong communication skills</li>
-            </ul>
-        </section>
+            <div class="question-card bg-white rounded-lg shadow-md p-6 hover:shadow-xl">
+                <h3 class="text-xl font-semibold text-gray-800 mb-3">Outlook Calendar Integration</h3>
+                <p class="text-gray-600">Add events, check availability, and manage Outlook calendars in n8n</p>
+            </div>
 
-        <section id="benefits" class="job-card">
-            <h2>What We Offer</h2>
-            <ul>
-                <li>Competitive salary package</li>
-                <li>Remote work options</li>
-                <li>Professional development opportunities</li>
-                <li>Health and wellness benefits</li>
-                <li>Collaborative work environment</li>
-            </ul>
-        </section>
+            <div class="question-card bg-white rounded-lg shadow-md p-6 hover:shadow-xl">
+                <h3 class="text-xl font-semibold text-gray-800 mb-3">OpenAI / AI Agents</h3>
+                <p class="text-gray-600">Working with OpenAI and AI Agents inside n8n workflow</p>
+            </div>
 
-        <section id="apply" class="job-card">
-            <h2>Apply Now</h2>
-            <p>Ready to take the next step in your career? We'd love to hear from you.</p>
-            <a href="#" class="cta-button">Submit Application</a>
-        </section>
-    </main>
+            <div class="question-card bg-white rounded-lg shadow-md p-6 hover:shadow-xl">
+                <h3 class="text-xl font-semibold text-gray-800 mb-3">Google Sheets Integration</h3>
+                <p class="text-gray-600">Working with Google Sheets and data enrichment techniques</p>
+            </div>
 
-    <footer>
-        <p>© 2024 Your Company Name. All rights reserved.</p>
-    </footer>
+            <div class="question-card bg-white rounded-lg shadow-md p-6 hover:shadow-xl">
+                <h3 class="text-xl font-semibold text-gray-800 mb-3">Vector DB in Pinecone</h3>
+                <p class="text-gray-600">Creating and managing Vector databases in Pinecone</p>
+            </div>
 
-    <!-- Chat widget placeholder -->
-   <div id="chat-container">
-    <style>
-        .chat-widget {
-            width: 360px;
-            height: 600px;
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            background: white;
-            border-radius: 12px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-            display: flex;
-            flex-direction: column;
-            overflow: hidden;
-            z-index: 9999;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-        }
-        .chat-header { background: black; color: white; padding: 16px; font-weight: 600; }
-        .chat-messages {
-            flex: 1;
-            overflow-y: auto;
-            padding: 16px;
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-            background: #fafafa;
-        }
-        .message {
-            max-width: 80%;
-            padding: 12px;
-            border-radius: 12px;
-            word-wrap: break-word;
-        }
-        .user-message { background: black; color: white; margin-left: auto; }
-        .bot-message { background: white; color: black; margin-right: auto; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
-        .chat-input {
-            padding: 16px;
-            border-top: 1px solid #eee;
-            display: flex;
-            gap: 8px;
-            background: white;
-        }
-        #messageInput {
-            flex: 1;
-            padding: 12px;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            outline: none;
-        }
-        #sendButton {
-            padding: 12px 24px;
-            background: black;
-            color: white;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-        }
-        .loading {
-            display: none;
-            margin: 0 auto;
-            width: 24px;
-            height: 24px;
-            border: 2px solid #f3f3f3;
-            border-top: 2px solid black;
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-        }
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-    </style>
-
-    <div class="chat-widget">
-        <div class="chat-header">Chat Support</div>
-        <div class="chat-messages" id="chatMessages">
-            <div class="message bot-message">Hello! How can I help you today?</div>
-            <div class="loading" id="loadingSpinner"></div>
+            <div class="question-card bg-white rounded-lg shadow-md p-6 hover:shadow-xl">
+                <h3 class="text-xl font-semibold text-gray-800 mb-3">Live Chat Integration</h3>
+                <p class="text-gray-600">Integrating OpenAI Assistant into live chat experiences</p>
+            </div>
         </div>
-        <form class="chat-input" id="chatForm">
-            <input type="text" id="messageInput" placeholder="Type your message..." required>
-            <button type="submit" id="sendButton">Send</button>
-        </form>
+
+        <div class="bg-white rounded-lg shadow-lg p-6 mb-8">
+            <h2 class="text-2xl font-bold text-gray-800 mb-4">Get Practical Answers</h2>
+            <p class="text-gray-600 mb-6">Use our AI chatbot to get detailed, practical answers to your questions about n8n integrations.</p>
+            
+            <!-- Chat Widget Container -->
+            <div class="chat-container bg-gray-50 rounded-lg p-4" style="height: 400px;">
+                <iframe
+                    src="https://n8n-18mf.onrender.com/webhook/da19cf96-3a4d-4569-a7fa-b8b1c2d82711/chat"
+                    width="100%"
+                    height="100%"
+                    frameborder="0"
+                    style="border-radius: 8px;">
+                </iframe>
+            </div>
+        </div>
     </div>
 
-    <script>
-        document.getElementById('chatForm').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const message = document.getElementById('messageInput').value.trim();
-            if (!message) return;
-
-            // Add user message
-            addMessage(message, 'user');
-            document.getElementById('messageInput').value = '';
-            
-            // Show loading
-            document.getElementById('loadingSpinner').style.display = 'block';
-            document.getElementById('sendButton').disabled = true;
-
-            try {
-                const response = await fetch('https://n8n-18mf.onrender.com/webhook/da19cf96-3a4d-4569-a7fa-b8b1c2d82711/chat', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ message })
-                });
-
-                const text = await response.text();
-                try {
-                    const jsonResponse = JSON.parse(text);
-                    const cleanText = jsonResponse.content || jsonResponse.message || jsonResponse.response || text;
-                    addMessage(cleanText, 'bot');
-                } catch (e) {
-                    addMessage(text, 'bot');
-                }
-            } catch (error) {
-                console.error('Error:', error);
-                addMessage('Sorry, something went wrong. Please try again.', 'bot');
-            } finally {
-                document.getElementById('loadingSpinner').style.display = 'none';
-                document.getElementById('sendButton').disabled = false;
-            }
-        });
-
-        function addMessage(content, type) {
-            const messageDiv = document.createElement('div');
-            messageDiv.className = `message ${type}-message`;
-            messageDiv.textContent = content;
-            document.getElementById('chatMessages').appendChild(messageDiv);
-            document.getElementById('chatMessages').scrollTop = document.getElementById('chatMessages').scrollHeight;
-        }
-    </script>
-</div>
+    <footer class="bg-gray-800 text-white py-6 mt-12">
+        <div class="container mx-auto px-4 text-center">
+            <p class="text-gray-400">Get practical answers to your n8n integration questions</p>
+        </div>
+    </footer>
 </body>
 </html>
