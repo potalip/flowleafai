@@ -1,105 +1,3 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        .chat-widget {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            width: 350px;
-            height: 500px;
-            background: #fff;
-            border-radius: 12px;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.15);
-            display: flex;
-            flex-direction: column;
-            overflow: hidden;
-            font-family: -apple-system, BlinkMacSystemFont, sans-serif;
-        }
-
-        .chat-header {
-            background: #000;
-            color: #fff;
-            padding: 15px;
-            text-align: center;
-            font-weight: 500;
-        }
-
-        .chat-messages {
-            flex: 1;
-            overflow-y: auto;
-            padding: 15px;
-            background: #f8f9fa;
-        }
-
-        .message {
-            margin-bottom: 12px;
-            max-width: 85%;
-            padding: 10px 15px;
-            border-radius: 15px;
-            line-height: 1.5;
-            font-size: 14px;
-            white-space: pre-wrap;
-        }
-
-        .user-message {
-            background: #000;
-            color: #fff;
-            margin-left: auto;
-            border-bottom-right-radius: 5px;
-        }
-
-        .bot-message {
-            background: #e9ecef;
-            color: #000;
-            margin-right: auto;
-            border-bottom-left-radius: 5px;
-        }
-
-        .chat-input-container {
-            padding: 10px;
-            background: #fff;
-            border-top: 1px solid #eee;
-        }
-
-        .chat-input {
-            padding: 15px;
-            background: #fff;
-            border-top: 1px solid #eee;
-            display: flex;
-            gap: 10px;
-        }
-
-        .chat-input input {
-            flex: 1;
-            padding: 10px;
-            border: 1px solid #ddd;
-            border-radius: 20px;
-            outline: none;
-            font-size: 14px;
-        }
-
-        .send-btn {
-            background: #000;
-            color: #fff;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 20px;
-            cursor: pointer;
-        }
-
-        .send-btn:disabled {
-            background: #ccc;
-            cursor: not-allowed;
-        }
-    </style>
-</head>
 <body>
     <div class="chat-widget">
         <div class="chat-header">
@@ -145,9 +43,7 @@
                         'Content-Type': 'application/json',
                     },
                     body: JSON.stringify({
-                        input: {
-                            input: message  // Nested input structure based on n8n workflow
-                        }
+                        message: message
                     })
                 });
 
@@ -155,8 +51,13 @@
                     throw new Error('Network response was not ok');
                 }
 
-                const data = await response.text();
-                addMessage(data);
+                const data = await response.json(); // Parse JSON response
+                if (data && data.output) {
+                    // Extract just the message from the output field
+                    addMessage(data.output);
+                } else {
+                    throw new Error('Invalid response format');
+                }
 
             } catch (error) {
                 console.error('Error:', error);
