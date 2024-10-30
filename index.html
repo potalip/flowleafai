@@ -12,8 +12,23 @@
         .question-card:hover {
             transform: translateY(-5px);
         }
-        .chat-container {
-            transition: height 0.3s ease-in-out;
+        .chat-widget {
+            height: 400px;
+            overflow-y: auto;
+        }
+        .chat-message {
+            margin-bottom: 10px;
+            padding: 10px;
+            border-radius: 10px;
+            max-width: 80%;
+        }
+        .user-message {
+            background-color: #e2e8f0;
+            margin-left: auto;
+        }
+        .bot-message {
+            background-color: #93c5fd;
+            margin-right: auto;
         }
     </style>
 </head>
@@ -57,19 +72,20 @@
             </div>
         </div>
 
+        <!-- Chat Widget Section -->
         <div class="bg-white rounded-lg shadow-lg p-6 mb-8">
             <h2 class="text-2xl font-bold text-gray-800 mb-4">Get Practical Answers</h2>
             <p class="text-gray-600 mb-6">Use our AI chatbot to get detailed, practical answers to your questions about n8n integrations.</p>
             
-            <!-- Chat Widget Container -->
-            <div class="chat-container bg-gray-50 rounded-lg p-4" style="height: 400px;">
-                <iframe
-                    src="https://n8n-18mf.onrender.com/webhook/da19cf96-3a4d-4569-a7fa-b8b1c2d82711/chat"
-                    width="100%"
-                    height="100%"
-                    frameborder="0"
-                    style="border-radius: 8px;">
-                </iframe>
+            <!-- Custom Chat Widget -->
+            <div class="chat-widget bg-gray-50 rounded-lg p-4 mb-4" id="chatMessages">
+                <!-- Messages will appear here -->
+            </div>
+            
+            <!-- Chat Input -->
+            <div class="flex gap-2">
+                <input type="text" id="messageInput" class="flex-1 p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400" placeholder="Type your question here...">
+                <button onclick="sendMessage()" class="bg-blue-500 text-white px-6 py-2 rounded-lg hover:bg-blue-600 transition-colors">Send</button>
             </div>
         </div>
     </div>
@@ -79,5 +95,60 @@
             <p class="text-gray-400">Get practical answers to your n8n integration questions</p>
         </div>
     </footer>
+
+    <script>
+        const chatMessages = document.getElementById('chatMessages');
+        const messageInput = document.getElementById('messageInput');
+        const webhookUrl = 'https://n8n-18mf.onrender.com/webhook/da19cf96-3a4d-4569-a7fa-b8b1c2d82711/chat';
+
+        function addMessage(message, isUser) {
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `chat-message ${isUser ? 'user-message' : 'bot-message'}`;
+            messageDiv.textContent = message;
+            chatMessages.appendChild(messageDiv);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        async function sendMessage() {
+            const message = messageInput.value.trim();
+            if (!message) return;
+
+            // Add user message to chat
+            addMessage(message, true);
+            messageInput.value = '';
+
+            try {
+                const response = await fetch(webhookUrl, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ message })
+                });
+
+                let data = await response.text(); // Get response as text
+                try {
+                    // Try to parse as JSON in case it comes as JSON
+                    const jsonData = JSON.parse(data);
+                    data = jsonData.message || jsonData.response || JSON.stringify(jsonData);
+                } catch (e) {
+                    // If parsing fails, use the text as is
+                }
+
+                // Add bot response to chat
+                addMessage(data, false);
+            } catch (error) {
+                console.error('Error:', error);
+                addMessage('Sorry, there was an error processing your request.', false);
+            }
+        }
+
+        // Allow sending message with Enter key
+        messageInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                sendMessage();
+            }
+        });
+    </script>
 </body>
 </html>
