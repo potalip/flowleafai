@@ -14,6 +14,7 @@
             bottom: 30px;
             right: 30px;
             width: 380px;
+            height: 550px;
             background: #fff;
             border-radius: 20px;
             box-shadow: 0 5px 20px rgba(0,0,0,0.1);
@@ -24,8 +25,7 @@
         }
 
         .chat-widget.minimized {
-            height: 60px !important;
-            cursor: pointer;
+            height: 60px;
         }
 
         .chat-widget.minimized .chat-messages,
@@ -43,6 +43,7 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
+            cursor: pointer;
         }
 
         .minimize-btn {
@@ -56,7 +57,7 @@
         }
 
         .chat-messages {
-            height: 400px;
+            flex: 1;
             overflow-y: auto;
             padding: 20px;
             background: #fff;
@@ -140,10 +141,10 @@
     </style>
 </head>
 <body>
-    <div class="chat-widget" id="chatWidget">
+    <div class="chat-widget minimized" id="chatWidget">
         <div class="chat-header" id="chatHeader">
             <span>Chat Support</span>
-            <button class="minimize-btn" id="minimizeBtn">−</button>
+            <button class="minimize-btn" id="minimizeBtn">+</button>
         </div>
         <div class="chat-messages" id="chatMessages">
             <div class="message bot-message">Hello! How can I help you today?</div>
@@ -163,23 +164,23 @@
         const sendBtn = document.getElementById('sendBtn');
         const webhook = 'https://n8n-18mf.onrender.com/webhook/da19cf96-3a4d-4569-a7fa-b8b1c2d82711/chat';
 
-        // Minimize/Maximize functionality
-        let isMinimized = false;
+        // Set initial state
+        let isMinimized = true;
 
-        function toggleMinimize() {
+        function toggleMinimize(event) {
+            if (event) {
+                event.stopPropagation();
+            }
             isMinimized = !isMinimized;
             chatWidget.classList.toggle('minimized');
             minimizeBtn.textContent = isMinimized ? '+' : '−';
         }
 
-        minimizeBtn.addEventListener('click', (e) => {
-            e.stopPropagation();
-            toggleMinimize();
-        });
+        minimizeBtn.addEventListener('click', toggleMinimize);
 
-        chatHeader.addEventListener('click', () => {
+        chatHeader.addEventListener('click', (e) => {
             if (isMinimized) {
-                toggleMinimize();
+                toggleMinimize(e);
             }
         });
 
