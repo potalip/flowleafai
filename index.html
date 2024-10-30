@@ -30,6 +30,34 @@
             background-color: #93c5fd;
             margin-right: auto;
         }
+        /* Loading indicator styles */
+        .typing-indicator {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        .typing-dot {
+            width: 8px;
+            height: 8px;
+            margin: 0 2px;
+            background-color: #93c5fd;
+            border-radius: 50%;
+            animation: typing 1s infinite ease-in-out;
+        }
+        .typing-dot:nth-child(1) { animation-delay: 0.2s; }
+        .typing-dot:nth-child(2) { animation-delay: 0.3s; }
+        .typing-dot:nth-child(3) { animation-delay: 0.4s; }
+        
+        @keyframes typing {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+        
+        /* Disable input during loading */
+        .input-disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+        }
     </style>
 </head>
 <body class="bg-gray-100 min-h-screen">
@@ -85,7 +113,7 @@
             <!-- Chat Input -->
             <div class="flex gap-2">
                 <input type="text" id="messageInput" class="flex-1 p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400" placeholder="Type your question here...">
-                <button onclick="sendMessage()" class="bg-blue-500 text-white px-6 py-2 rounded-lg hover:bg-blue-600 transition-colors">Send</button>
+                <button id="sendButton" onclick="sendMessage()" class="bg-blue-500 text-white px-6 py-2 rounded-lg hover:bg-blue-600 transition-colors">Send</button>
             </div>
         </div>
     </div>
@@ -99,8 +127,9 @@
     <script>
         const chatMessages = document.getElementById('chatMessages');
         const messageInput = document.getElementById('messageInput');
+        const sendButton = document.getElementById('sendButton');
         const webhookUrl = 'https://n8n-18mf.onrender.com/webhook/da19cf96-3a4d-4569-a7fa-b8b1c2d82711/chat';
-
+        
         function addMessage(message, isUser) {
             const messageDiv = document.createElement('div');
             messageDiv.className = `chat-message ${isUser ? 'user-message' : 'bot-message'}`;
@@ -109,13 +138,51 @@
             chatMessages.scrollTop = chatMessages.scrollHeight;
         }
 
+        function showLoadingIndicator() {
+            const loadingDiv = document.createElement('div');
+            loadingDiv.className = 'typing-indicator';
+            loadingDiv.innerHTML = `
+                <div class="typing-dot"></div>
+                <div class="typing-dot"></div>
+                <div class="typing-dot"></div>
+            `;
+            loadingDiv.id = 'loadingIndicator';
+            chatMessages.appendChild(loadingDiv);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        function removeLoadingIndicator() {
+            const loadingIndicator = document.getElementById('loadingIndicator');
+            if (loadingIndicator) {
+                loadingIndicator.remove();
+            }
+        }
+
+        function setInputState(disabled) {
+            messageInput.disabled = disabled;
+            sendButton.disabled = disabled;
+            if (disabled) {
+                messageInput.classList.add('input-disabled');
+                sendButton.classList.add('input-disabled');
+            } else {
+                messageInput.classList.remove('input-disabled');
+                sendButton.classList.remove('input-disabled');
+            }
+        }
+
         async function sendMessage() {
             const message = messageInput.value.trim();
             if (!message) return;
 
+            // Disable input while processing
+            setInputState(true);
+
             // Add user message to chat
             addMessage(message, true);
             messageInput.value = '';
+
+            // Show loading indicator
+            showLoadingIndicator();
 
             try {
                 const response = await fetch(webhookUrl, {
@@ -143,17 +210,24 @@
                     botMessage = data;
                 }
 
+                // Remove loading indicator
+                removeLoadingIndicator();
+
                 // Add bot response to chat
                 addMessage(botMessage, false);
             } catch (error) {
                 console.error('Error:', error);
+                removeLoadingIndicator();
                 addMessage('Sorry, there was an error processing your request.', false);
+            } finally {
+                // Re-enable input
+                setInputState(false);
             }
         }
 
         // Allow sending message with Enter key
         messageInput.addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') {
+            if (e.key === 'Enter' && !messageInput.disabled) {
                 sendMessage();
             }
         });
