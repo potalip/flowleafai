@@ -133,20 +133,35 @@
     let currentThreadId = null;
 
     function formatMessage(message) {
-        // Simple URL extraction and linking
-        message = message.replace(
-            /https:\/\/www\.google\.com\/calendar\/event\?[^\s]+/g,
-            url => `<a href="${url}" target="_blank" class="text-blue-600 hover:text-blue-800 underline">Click here to view event</a>`
-        );
+    // Check if message contains any URLs
+    const hasUrls = /(https?:\/\/[^\s]+)/g.test(message);
+    
+    // General URL pattern matching and linking
+    message = message.replace(
+        /(https?:\/\/[^\s]+)/g,
+        url => `<a href="${url}" target="_blank" class="text-blue-600 hover:text-blue-800 underline break-all">${url}</a>`
+    );
 
-        // Handle line breaks
-        message = message.replace(/\n/g, '<br>');
-        
-        // Handle bold text
-        message = message.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
-        
-        return message;
+    // Add note about copying links if URLs are present
+    if (hasUrls) {
+        message += `<div class="text-sm text-gray-500 mt-2 italic">Note: If clicking the link doesn't work, you may need to copy and paste it into your browser's address bar.</div>`;
     }
+
+    // Handle line breaks
+    message = message.replace(/\n/g, '<br>');
+    
+    // Handle bold text
+    message = message.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+    
+    // Handle bullet points
+    message = message.replace(
+        /^[•\-*]\s(.+)$/gm,
+        '<span class="block ml-4">• $1</span>'
+    );
+    
+    return message;
+}
+
 
     function addMessage(message, isUser) {
         const messageDiv = document.createElement('div');
