@@ -1,133 +1,5 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Chat Widget</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-        }
-
-        .chat-widget {
-            width: 360px;
-            height: 600px;
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            background: white;
-            border-radius: 12px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-            display: flex;
-            flex-direction: column;
-            overflow: hidden;
-        }
-
-        .chat-header {
-            background: black;
-            color: white;
-            padding: 16px;
-            font-weight: 600;
-        }
-
-        .chat-messages {
-            flex: 1;
-            overflow-y: auto;
-            padding: 16px;
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-        }
-
-        .message {
-            max-width: 80%;
-            padding: 12px;
-            border-radius: 12px;
-            word-wrap: break-word;
-        }
-
-        .user-message {
-            background: black;
-            color: white;
-            margin-left: auto;
-        }
-
-        .bot-message {
-            background: #f0f0f0;
-            color: black;
-            margin-right: auto;
-        }
-
-        .chat-input {
-            padding: 16px;
-            border-top: 1px solid #eee;
-            display: flex;
-            gap: 8px;
-        }
-
-        #messageInput {
-            flex: 1;
-            padding: 12px;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            outline: none;
-        }
-
-        #sendButton {
-            padding: 12px 24px;
-            background: black;
-            color: white;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: opacity 0.2s;
-        }
-
-        #sendButton:hover {
-            opacity: 0.9;
-        }
-
-        #sendButton:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-        }
-
-        .loading {
-            display: none;
-            margin: 0 auto;
-            width: 40px;
-            height: 40px;
-            border: 3px solid #f3f3f3;
-            border-top: 3px solid black;
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-        }
-
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-    </style>
-</head>
-<body>
-    <div class="chat-widget">
-        <div class="chat-header">
-            Chat Support
-        </div>
-        <div class="chat-messages" id="chatMessages">
-            <div class="message bot-message">
-                Hello! How can I help you today?
-            </div>
-            <div class="loading" id="loadingSpinner"></div>
-        </div>
-        <form class="chat-input" id="chatForm">
-            <input type="text" id="messageInput" placeholder="Type your message..." required>
-            <button type="submit" id="sendButton">Send</button>
-        </form>
-    </div>
-
-    <script>
+<!-- Add this before closing </body> tag - Simplified JavaScript -->
+<script>
     const chatForm = document.getElementById('chatForm');
     const messageInput = document.getElementById('messageInput');
     const chatMessages = document.getElementById('chatMessages');
@@ -156,35 +28,8 @@
                 body: JSON.stringify({ message })
             });
 
-            const data = await response.json();
-            
-            // Clean and parse the response
-            let cleanedResponse;
-            try {
-                // If the response is a string containing JSON
-                if (typeof data === 'string') {
-                    const parsedData = JSON.parse(data);
-                    cleanedResponse = parsedData.response || parsedData.message || parsedData;
-                }
-                // If the response is already a JSON object
-                else {
-                    cleanedResponse = data.response || data.message || JSON.stringify(data);
-                }
-
-                // If the response is still a JSON string, try to parse it again
-                if (typeof cleanedResponse === 'string' && cleanedResponse.startsWith('{')) {
-                    try {
-                        const finalParsed = JSON.parse(cleanedResponse);
-                        cleanedResponse = finalParsed.response || finalParsed.message || JSON.stringify(finalParsed);
-                    } catch (e) {
-                        // If parsing fails, use the string as is
-                    }
-                }
-            } catch (e) {
-                cleanedResponse = String(data);
-            }
-
-            addMessage(cleanedResponse, 'bot');
+            const text = await response.text();
+            addMessage(text, 'bot');
             
         } catch (error) {
             console.error('Error:', error);
@@ -198,16 +43,8 @@
     function addMessage(content, type) {
         const messageDiv = document.createElement('div');
         messageDiv.className = `message ${type}-message`;
-        
-        // If content is an object, stringify it nicely
-        if (typeof content === 'object') {
-            content = JSON.stringify(content, null, 2);
-        }
-        
         messageDiv.textContent = content;
         chatMessages.appendChild(messageDiv);
         chatMessages.scrollTop = chatMessages.scrollHeight;
     }
 </script>
-</body>
-</html>
