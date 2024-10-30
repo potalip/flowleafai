@@ -124,22 +124,39 @@
         </div>
     </footer>
 
-     <script>
+    <script>
     const chatMessages = document.getElementById('chatMessages');
     const messageInput = document.getElementById('messageInput');
     const sendButton = document.getElementById('sendButton');
     const webhookUrl = 'https://n8n-18mf.onrender.com/webhook/da19cf96-3a4d-4569-a7fa-b8b1c2d82711/chat';
     
-    // Store the thread ID
     let currentThreadId = null;
+
+    function formatMessage(message) {
+        return message
+            // First, escape any HTML to prevent XSS
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            // Convert URLs to clickable links
+            // This regex matches http/https URLs and also www. URLs
+            .replace(
+                /(https?:\/\/[^\s]+)|(www\.[^\s]+)/g, 
+                match => `<a href="${match.startsWith('www.') ? 'http://' + match : match}" 
+                            target="_blank" 
+                            rel="noopener noreferrer" 
+                            class="text-blue-600 hover:text-blue-800 underline">${match}</a>`
+            )
+            // Then handle markdown-style bold text
+            .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+            // Finally, handle line breaks
+            .replace(/\n/g, '<br>');
+    }
 
     function addMessage(message, isUser) {
         const messageDiv = document.createElement('div');
         messageDiv.className = `chat-message ${isUser ? 'user-message' : 'bot-message'}`;
-        // Parse markdown-style formatting
-        const formattedMessage = message.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
-                                      .replace(/\n/g, '<br>'); // Handle line breaks
-        messageDiv.innerHTML = formattedMessage;
+        messageDiv.innerHTML = formatMessage(message);
         chatMessages.appendChild(messageDiv);
         chatMessages.scrollTop = chatMessages.scrollHeight;
     }
@@ -190,7 +207,6 @@
                 message: message
             };
             
-            // Include thread_id in the request if we have one
             if (currentThreadId) {
                 requestBody.thread_id = currentThreadId;
             }
@@ -209,7 +225,6 @@
             try {
                 const jsonData = JSON.parse(data);
                 
-                // Handle array response
                 if (Array.isArray(jsonData) && jsonData.length > 0) {
                     const responseObj = jsonData[0];
                     
@@ -217,13 +232,11 @@
                         botMessage = responseObj.output;
                     }
                     
-                    // Update thread_id from response
                     if (responseObj.thread_id) {
                         currentThreadId = responseObj.thread_id.trim();
                         console.log('Updated thread ID:', currentThreadId);
                     }
                 } else if (typeof jsonData === 'object') {
-                    // Fallback for non-array responses
                     if (jsonData.output) {
                         botMessage = jsonData.output;
                     }
