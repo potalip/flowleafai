@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>n8n Questions</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
+    <style>
+        .question-card {
+            transition: transform 0.2s ease-in-out;
+        }
+        .question-card:hover {
+            transform: translateY(-5px);
+        }
+        .chat-widget {
+            height: 400px;
+            overflow-y: auto;
+        }
+        .chat-message {
+            margin-bottom: 10px;
+            padding: 10px;
+            border-radius: 10px;
+            max-width: 80%;
+        }
+        .user-message {
+            background-color: #e2e8f0;
+            margin-left: auto;
+        }
+        .bot-message {
+            background-color: #93c5fd;
+            margin-right: auto;
+        }
+        /* Loading indicator styles */
+        .typing-indicator {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        .typing-dot {
+            width: 8px;
+            height: 8px;
+            margin: 0 2px;
+            background-color: #93c5fd;
+            border-radius: 50%;
+            animation: typing 1s infinite ease-in-out;
+        }
+        .typing-dot:nth-child(1) { animation-delay: 0.2s; }
+        .typing-dot:nth-child(2) { animation-delay: 0.3s; }
+        .typing-dot:nth-child(3) { animation-delay: 0.4s; }
+        
+        @keyframes typing {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+        
+        /* Disable input during loading */
+        .input-disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 min-h-screen">
+    <div class="container mx-auto px-4 py-8">
+        <header class="text-center mb-12">
+            <h1 class="text-4xl font-bold text-gray-800 mb-4">Welcome</h1>
+            <p class="text-gray-600">Explore your questions on this demo and get practical answers</p>
+        </header>
+
+        <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
+            <!-- Question Cards -->
+            <div class="question-card bg-white rounded-lg shadow-md p-6 hover:shadow-xl">
+                <h3 class="text-xl font-semibold text-gray-800 mb-3">Google Calendar Integration</h3>
+                <p class="text-gray-600">Add events, check availability, and manage calendars in n8n</p>
+            </div>
+
+            <div class="question-card bg-white rounded-lg shadow-md p-6 hover:shadow-xl">
+                <h3 class="text-xl font-semibold text-gray-800 mb-3">Outlook Calendar Integration</h3>
+                <p class="text-gray-600">Add events, check availability, and manage Outlook calendars in n8n</p>
+            </div>
+
+            <div class="question-card bg-white rounded-lg shadow-md p-6 hover:shadow-xl">
+                <h3 class="text-xl font-semibold text-gray-800 mb-3">OpenAI / AI Agents</h3>
+                <p class="text-gray-600">Working with OpenAI and AI Agents inside n8n workflow</p>
+            </div>
+
+            <div class="question-card bg-white rounded-lg shadow-md p-6 hover:shadow-xl">
+                <h3 class="text-xl font-semibold text-gray-800 mb-3">Google Sheets Integration</h3>
+                <p class="text-gray-600">Working with Google Sheets and data enrichment techniques</p>
+            </div>
+
+            <div class="question-card bg-white rounded-lg shadow-md p-6 hover:shadow-xl">
+                <h3 class="text-xl font-semibold text-gray-800 mb-3">Vector DB in Pinecone</h3>
+                <p class="text-gray-600">Creating and managing Vector databases in Pinecone</p>
+            </div>
+
+            <div class="question-card bg-white rounded-lg shadow-md p-6 hover:shadow-xl">
+                <h3 class="text-xl font-semibold text-gray-800 mb-3">Live Chat Integration</h3>
+                <p class="text-gray-600">Integrating OpenAI Assistant into live chat experiences</p>
+            </div>
+        </div>
+
+        <!-- Chat Widget Section -->
+        <div class="bg-white rounded-lg shadow-lg p-6 mb-8">
+            <h2 class="text-2xl font-bold text-gray-800 mb-4">Agent_Demo</h2>
+            <p class="text-gray-600 mb-6">This agent runs on threads(OpenAI Assitant API) n8n for tool calling </p>
+            
+            <!-- Custom Chat Widget -->
+            <div class="chat-widget bg-gray-50 rounded-lg p-4 mb-4" id="chatMessages">
+                <!-- Messages will appear here -->
+            </div>
+            
+            <!-- Chat Input -->
+            <div class="flex gap-2">
+                <input type="text" id="messageInput" class="flex-1 p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400" placeholder="Type your question here...">
+                <button id="sendButton" onclick="sendMessage()" class="bg-blue-500 text-white px-6 py-2 rounded-lg hover:bg-blue-600 transition-colors">Send</button>
+            </div>
+        </div>
+    </div>
+
+    <footer class="bg-gray-800 text-white py-6 mt-12">
+        <div class="container mx-auto px-4 text-center">
+            <p class="text-gray-400">Get practical answers to your n8n integration questions</p>
+        </div>
+    </footer>
+
+ <script>
+    const chatMessages = document.getElementById('chatMessages');
+    const messageInput = document.getElementById('messageInput');
+    const sendButton = document.getElementById('sendButton');
+    const webhookUrl = 'https://n8n-18mf.onrender.com/webhook/da19cf96-3a4d-4569-a7fa-b8b1c2d82711/chat';
+    
+    let currentThreadId = null;
+
+    function formatMessage(message) {
+        // Check if message contains any URLs
+        const hasUrls = /(https?:\/\/[^\s]+)/g.test(message);
+        
+        // General URL pattern matching and linking
+        message = message.replace(
+            /(https?:\/\/[^\s]+)/g,
+            url => `<a href="${url}" target="_blank" class="text-blue-600 hover:text-blue-800 underline break-all">${url}</a>`
+        );
+
+        // Add note about copying links if URLs are present
+        if (hasUrls) {
+            message += `<div class="text-sm text-gray-500 mt-2 italic">Note: If clicking the link doesn't work, you may need to copy and paste it into your browser's address bar.</div>`;
+        }
+
+        // Handle line breaks
+        message = message.replace(/\n/g, '<br>');
+        
+        // Handle bold text
+        message = message.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+        
+        // Handle bullet points
+        message = message.replace(
+            /^[•\-*]\s(.+)$/gm,
+            '<span class="block ml-4">• $1</span>'
+        );
+        
+        return message;
+    }
+
+    function addMessage(message, isUser) {
+        const messageDiv = document.createElement('div');
+        messageDiv.className = `chat-message ${isUser ? 'user-message' : 'bot-message'}`;
+        messageDiv.innerHTML = formatMessage(message);
+        chatMessages.appendChild(messageDiv);
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+    }
+
+    function showLoadingIndicator() {
+        const loadingDiv = document.createElement('div');
+        loadingDiv.className = 'typing-indicator';
+        loadingDiv.innerHTML = `
+            <div class="typing-dot"></div>
+            <div class="typing-dot"></div>
+            <div class="typing-dot"></div>
+        `;
+        loadingDiv.id = 'loadingIndicator';
+        chatMessages.appendChild(loadingDiv);
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+    }
+
+    function removeLoadingIndicator() {
+        const loadingIndicator = document.getElementById('loadingIndicator');
+        if (loadingIndicator) {
+            loadingIndicator.remove();
+        }
+    }
+
+    function setInputState(disabled) {
+        messageInput.disabled = disabled;
+        sendButton.disabled = disabled;
+        if (disabled) {
+            messageInput.classList.add('input-disabled');
+            sendButton.classList.add('input-disabled');
+        } else {
+            messageInput.classList.remove('input-disabled');
+            sendButton.classList.remove('input-disabled');
+        }
+    }
+
+    async function sendMessage() {
+        const message = messageInput.value.trim();
+        if (!message) return;
+
+        setInputState(true);
+        addMessage(message, true);
+        messageInput.value = '';
+        showLoadingIndicator();
+
+        try {
+            const requestBody = {
+                message: message
+            };
+            
+            if (currentThreadId) {
+                requestBody.thread_id = currentThreadId;
+            }
+
+            const response = await fetch(webhookUrl, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(requestBody)
+            });
+
+            const data = await response.text();
+            let botMessage = '';
+            
+            try {
+                const jsonData = JSON.parse(data);
+                
+                if (Array.isArray(jsonData) && jsonData.length > 0) {
+                    const responseObj = jsonData[0];
+                    
+                    if (responseObj.output) {
+                        botMessage = responseObj.output;
+                    }
+                    
+                    if (responseObj.thread_id) {
+                        currentThreadId = responseObj.thread_id.trim();
+                        console.log('Updated thread ID:', currentThreadId);
+                    }
+                } else if (typeof jsonData === 'object') {
+                    if (jsonData.output) {
+                        botMessage = jsonData.output;
+                    }
+                    if (jsonData.thread_id) {
+                        currentThreadId = jsonData.thread_id.trim();
+                        console.log('Updated thread ID:', currentThreadId);
+                    }
+                }
+            } catch (e) {
+                console.error('Error parsing response:', e);
+                botMessage = data;
+            }
+
+            removeLoadingIndicator();
+            if (botMessage) {
+                addMessage(botMessage, false);
+            } else {
+                addMessage('Sorry, I received an empty response.', false);
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            removeLoadingIndicator();
+            addMessage('Sorry, there was an error processing your request.', false);
+        } finally {
+            setInputState(false);
+        }
+    }
+
+    // Allow sending message with Enter key
+    messageInput.addEventListener('keypress', function(e) {
+        if (e.key === 'Enter' && !messageInput.disabled) {
+            sendMessage();
+        }
+    });
+</script>
+</body>
+</html>
