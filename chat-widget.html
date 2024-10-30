@@ -32,7 +32,6 @@
             font-size: 18px;
             font-weight: 600;
             letter-spacing: 0.5px;
-            border-bottom: 2px solid rgba(255,255,255,0.1);
             box-shadow: 0 2px 10px rgba(0,0,0,0.1);
         }
 
@@ -53,12 +52,8 @@
             line-height: 1.5;
             border-radius: 18px;
             position: relative;
-            transition: all 0.3s ease;
-        }
-
-        .message:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            animation: slideIn 0.3s ease forwards;
+            word-wrap: break-word;
         }
 
         .user-message {
@@ -114,6 +109,7 @@
             transition: all 0.3s ease;
             text-transform: uppercase;
             letter-spacing: 1px;
+            min-width: 100px;
         }
 
         .send-btn:hover {
@@ -121,15 +117,21 @@
             box-shadow: 0 5px 15px rgba(0,0,0,0.2);
         }
 
-        .send-btn:active {
-            transform: translateY(0);
-        }
-
         .send-btn:disabled {
             background: #ccc;
             transform: none;
             box-shadow: none;
-            cursor: not-allowed;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         /* Custom scrollbar */
@@ -144,55 +146,7 @@
         .chat-messages::-webkit-scrollbar-thumb {
             background: #000;
             border-radius: 4px;
-        }
-
-        /* Message animation */
-        @keyframes slideIn {
-            from {
-                opacity: 0;
-                transform: translateY(10px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .message {
-            animation: slideIn 0.3s ease forwards;
-        }
-
-        /* Typing indicator */
-        .typing {
-            display: flex;
-            gap: 5px;
-            padding: 10px 20px;
-            background: #f5f5f5;
-            border-radius: 20px;
-            width: fit-content;
-            margin-bottom: 10px;
-            opacity: 0;
-            transition: opacity 0.3s ease;
-        }
-
-        .typing.active {
-            opacity: 1;
-        }
-
-        .typing span {
-            width: 8px;
-            height: 8px;
-            background: #000;
-            border-radius: 50%;
-            animation: pulse 1s infinite;
-        }
-
-        .typing span:nth-child(2) { animation-delay: 0.2s; }
-        .typing span:nth-child(3) { animation-delay: 0.4s; }
-
-        @keyframes pulse {
-            0%, 100% { transform: scale(1); opacity: 0.4; }
-            50% { transform: scale(1.2); opacity: 1; }
+            opacity: 0.5;
         }
     </style>
 </head>
@@ -230,7 +184,7 @@
             if (!message) return;
 
             console.log('Sending message:', message);
-
+            
             messageInput.disabled = true;
             sendBtn.disabled = true;
 
@@ -238,38 +192,22 @@
             messageInput.value = '';
 
             try {
-                console.log('Making webhook request...');
                 const response = await fetch(webhook, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
                     },
-                    body: JSON.stringify({ input: message }) // Changed to input
+                    body: JSON.stringify({ input: message })
                 });
 
-                console.log('Response status:', response.status);
-                console.log('Response headers:', [...response.headers.entries()]);
-
-                // Log the raw response
                 const rawResponse = await response.text();
                 console.log('Raw response:', rawResponse);
 
                 try {
-                    // Try to parse as JSON first
                     const jsonResponse = JSON.parse(rawResponse);
-                    console.log('Parsed JSON response:', jsonResponse);
-                    
-                    // Check for different possible response formats
-                    const messageToDisplay = jsonResponse.output || 
-                                          jsonResponse.response || 
-                                          jsonResponse.message || 
-                                          jsonResponse.result ||
-                                          rawResponse;
-                    
+                    const messageToDisplay = jsonResponse.output || rawResponse;
                     addMessage(messageToDisplay);
-                } catch (parseError) {
-                    // If not JSON, use the raw response
-                    console.log('Not JSON, using raw response');
+                } catch {
                     addMessage(rawResponse);
                 }
 
@@ -292,9 +230,6 @@
                 sendMessage();
             }
         });
-
-        // Log when the widget is loaded
-        console.log('Chat widget loaded successfully');
     </script>
 </body>
 </html>
