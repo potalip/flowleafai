@@ -124,7 +124,7 @@
         </div>
     </footer>
 
-  <script>
+ <script>
     const chatMessages = document.getElementById('chatMessages');
     const messageInput = document.getElementById('messageInput');
     const sendButton = document.getElementById('sendButton');
@@ -133,39 +133,19 @@
     let currentThreadId = null;
 
     function formatMessage(message) {
-        // Handle the specific calendar link format
+        // Simple URL extraction and linking
         message = message.replace(
-            /\[Click to view your event\]\(target="_blank" rel="noopener noreferrer" class="[^"]*"\)?(https?:\/\/[^\s]+)/g,
-            (match, url) => {
-                const actualUrl = url || match.split('">').pop().split('</a>')[0];
-                return `<a href="${actualUrl}" target="_blank" rel="noopener noreferrer" class="text-blue-600 hover:text-blue-800 underline">Click to view your event</a>`;
-            }
+            /https:\/\/www\.google\.com\/calendar\/event\?[^\s]+/g,
+            url => `<a href="${url}" target="_blank" class="text-blue-600 hover:text-blue-800 underline">Click here to view event</a>`
         );
 
-        // Extract URLs from HTML-formatted links
-        message = message.replace(
-            /">(https?:\/\/[^\s<]+)</g,
-            (match, url) => url
-        );
-
-        return message
-            // Escape HTML to prevent XSS
-            .replace(/&/g, '&amp;')
-            .replace(/</g, '&lt;')
-            .replace(/>/g, '&gt;')
-            // Handle general URLs
-            .replace(
-                /(https?:\/\/[^\s.]+\.[^\s]+)/g,
-                (match) => {
-                    const url = match.replace(/[.),]+$/, '');
-                    if (message.includes(`">${url}`)) return url; // Skip if already handled
-                    return `<a href="${url}" target="_blank" rel="noopener noreferrer" class="text-blue-600 hover:text-blue-800 underline">${url}</a>`;
-                }
-            )
-            // Handle markdown-style bold text
-            .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
-            // Handle line breaks
-            .replace(/\n/g, '<br>');
+        // Handle line breaks
+        message = message.replace(/\n/g, '<br>');
+        
+        // Handle bold text
+        message = message.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+        
+        return message;
     }
 
     function addMessage(message, isUser) {
