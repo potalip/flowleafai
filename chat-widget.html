@@ -1,4 +1,4 @@
-<!-- Add this before closing </body> tag - Simplified JavaScript -->
+<!-- Add this before closing </body> tag - Updated to handle JSON response -->
 <script>
     const chatForm = document.getElementById('chatForm');
     const messageInput = document.getElementById('messageInput');
@@ -29,7 +29,17 @@
             });
 
             const text = await response.text();
-            addMessage(text, 'bot');
+            
+            // Extract the actual message from the JSON response
+            try {
+                const jsonResponse = JSON.parse(text);
+                // Display just the text content, not the raw JSON
+                const cleanText = jsonResponse.content || jsonResponse.message || jsonResponse.response || text;
+                addMessage(cleanText, 'bot');
+            } catch (e) {
+                // If JSON parsing fails, show the raw text
+                addMessage(text, 'bot');
+            }
             
         } catch (error) {
             console.error('Error:', error);
