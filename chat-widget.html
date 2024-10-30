@@ -203,11 +203,6 @@
         </div>
         <div class="chat-messages" id="chatMessages">
             <div class="message bot-message">Hello! How can I help you today?</div>
-            <div class="typing" id="typingIndicator">
-                <span></span>
-                <span></span>
-                <span></span>
-            </div>
         </div>
         <div class="chat-input">
             <input type="text" id="messageInput" placeholder="Type your message...">
@@ -219,14 +214,14 @@
         const chatMessages = document.getElementById('chatMessages');
         const messageInput = document.getElementById('messageInput');
         const sendBtn = document.getElementById('sendBtn');
-        const typingIndicator = document.getElementById('typingIndicator');
         const webhook = 'https://n8n-18mf.onrender.com/webhook/da19cf96-3a4d-4569-a7fa-b8b1c2d82711/chat';
 
         function addMessage(text, isUser = false) {
+            console.log('Adding message:', text, 'isUser:', isUser);
             const messageDiv = document.createElement('div');
             messageDiv.className = `message ${isUser ? 'user-message' : 'bot-message'}`;
             messageDiv.textContent = text;
-            chatMessages.insertBefore(messageDiv, typingIndicator);
+            chatMessages.appendChild(messageDiv);
             chatMessages.scrollTop = chatMessages.scrollHeight;
         }
 
@@ -234,32 +229,52 @@
             const message = messageInput.value.trim();
             if (!message) return;
 
+            console.log('Sending message:', message);
+
             messageInput.disabled = true;
             sendBtn.disabled = true;
 
             addMessage(message, true);
             messageInput.value = '';
 
-            // Show typing indicator
-            typingIndicator.classList.add('active');
-
             try {
+                console.log('Making webhook request...');
                 const response = await fetch(webhook, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
                     },
-                    body: JSON.stringify({ message })
+                    body: JSON.stringify({ input: message }) // Changed to input
                 });
 
-                const text = await response.text();
-                // Hide typing indicator
-                typingIndicator.classList.remove('active');
-                addMessage(text);
+                console.log('Response status:', response.status);
+                console.log('Response headers:', [...response.headers.entries()]);
+
+                // Log the raw response
+                const rawResponse = await response.text();
+                console.log('Raw response:', rawResponse);
+
+                try {
+                    // Try to parse as JSON first
+                    const jsonResponse = JSON.parse(rawResponse);
+                    console.log('Parsed JSON response:', jsonResponse);
+                    
+                    // Check for different possible response formats
+                    const messageToDisplay = jsonResponse.output || 
+                                          jsonResponse.response || 
+                                          jsonResponse.message || 
+                                          jsonResponse.result ||
+                                          rawResponse;
+                    
+                    addMessage(messageToDisplay);
+                } catch (parseError) {
+                    // If not JSON, use the raw response
+                    console.log('Not JSON, using raw response');
+                    addMessage(rawResponse);
+                }
 
             } catch (error) {
                 console.error('Error:', error);
-                typingIndicator.classList.remove('active');
                 addMessage("I'm having trouble connecting. Please try again.");
             } finally {
                 messageInput.disabled = false;
@@ -277,6 +292,9 @@
                 sendMessage();
             }
         });
+
+        // Log when the widget is loaded
+        console.log('Chat widget loaded successfully');
     </script>
 </body>
 </html>
